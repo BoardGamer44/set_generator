@@ -29,7 +29,7 @@ def generate_set(feature_number=4,feature_variety=3):
 
 
 
-dwg = svgwrite.Drawing('C:\\Users\\torp4\\Pyton_files\\Drawings\\test10.svg', profile='tiny', size=(u'100%', u'100%'))
+dwg = svgwrite.Drawing('C:\\test10.svg', profile='tiny', size=(u'100%', u'100%'))
 
 # градиенты вынесены отдельно так как непонятно как создать отдельный объект градиента в каждом объекте карты
 # кроме того экономичнее иметь три градиента вместо 81
