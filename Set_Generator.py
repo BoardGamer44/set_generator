@@ -6,7 +6,7 @@ def generate_set(feature_number=4,feature_variety=3):
 #    системы счисления с основанием feature_variety (по умолчанию - троичная система счисления)
 #    feature_number число признаков(разрядность, возможные варианты - 4(по умолчанию) и 3(только зеленый цвет))
 #    feature_variety вариативность признаков(основание системы счисления, минимум 2, 
-#   максимум - максимальное число методов в классе card(пока 3), теоритический максимум алгоритма - 9)
+#   максимум - максимальное число методов в классе Card(пока 3), теоритический максимум алгоритма - 9)
     code_of_set_list=[0 for i in range(feature_variety**feature_number)] # массив кодов(число возможных вариаций чисел в заданной разрядности)
     append_list=[0 for i in range(feature_number)] # массив приращений(нужен для работы механизма переноса разряда)
     start_code_value=int('1'*feature_number) # стартовое значение(нулевое число системы счисления с учетом разрядов, в данном случае - 1111)
@@ -48,7 +48,7 @@ rad_grad3.add_stop_color(offset='0%', color='rgb(20, 50, 250)', opacity=None)
 rad_grad3.add_stop_color(offset='100%', color='white', opacity=None)
 dwg.defs.add(rad_grad3)
 
-class card: # класс карты, каждая карта будет уникальным объектом этого класса
+class Card: # класс карты, каждая карта будет уникальным объектом этого класса
     card_widht=183 #  ширина карты, из неё высчитывается высота карты и центры фигур
     # вынесенна отдельна т.к. к этой переменной обращаются до создания объектов
     def __init__(self):
@@ -60,15 +60,15 @@ class card: # класс карты, каждая карта будет уник
         self.card_height= self.card_widht//0.7 #  высота карты
 
 # методы смены цвета фигуры        
-    def color1(self): # смена цвета на красный
+    def set_color1(self): # смена цвета на красный
         self.fill_color='rgb(250, 0, 0)'
         self.border_color='rgb(200, 0, 0)'
         self.fill_type='url(#grad1)'  # при инициализации цвета определяется какой градиент использовать, если надо
-    def color2(self): # смена цвета на зеленый
+    def set_color2(self): # смена цвета на зеленый
         self.fill_color='rgb(00, 250, 00)'
         self.border_color='rgb(0, 200, 0)'
         self.fill_type='url(#grad2)'
-    def color3(self): # смена цвета на синий
+    def set_color3(self): # смена цвета на синий
         self.fill_color='rgb(0, 0, 250)'
         self.border_color='rgb(0, 0, 200)'
         self.fill_type='url(#grad3)'
@@ -76,25 +76,25 @@ class card: # класс карты, каждая карта будет уник
 # методы смена типа заполнения - полной, градиентом, ничем, штриховкой(?)
 # этот метод нужно запускать обязательно
     
-    def fill1(self): # смена типа заполнения на пустой
+    def set_fill1(self): # смена типа заполнения на пустой
         self.fill_type='none'
         
-    def fill2(self): # по умолчанию заполнение уже стоит на градиенте правильного цвета
+    def set_fill2(self): # по умолчанию заполнение уже стоит на градиенте правильного цвета
         pass 
         
-    def fill3(self): # смена типа заполнения на заливку
+    def set_fill3(self): # смена типа заполнения на заливку
         self.fill_type=self.fill_color
 
 # методы задания колличества фигур, создает координаты для расположения центров этих фигур   
 # figure_centreX/Y массив из координат центров, цикл отрисовки фигур отрабатывает по числу координат в массиве X
 # координаты относительно края карты, Х всегда по середине карты, Y зависит от числа фигур
-    def position1(self): # центра единственной фигуры, Y по середины карты
+    def set_position1(self): # центра единственной фигуры, Y по середины карты
         # кортеж из одного элемента нужно завершать запятой
         self.figure_centreX, self.figure_centreY=(int(self.cardx+self.card_widht//2),), (int(self.cardy+self.card_height*0.5),)
-    def position2(self): # центры двух фигур, Y на 1/3 и 2/3 высоты карты
+    def set_position2(self): # центры двух фигур, Y на 1/3 и 2/3 высоты карты
         self.figure_centreX=(int(self.cardx+self.card_widht//2), int(self.cardx+self.card_widht//2)) 
         self.figure_centreY=(int(self.cardy+self.card_height*0.333), int(self.cardy+self.card_height*0.666))
-    def position3(self): # центры трех фигур, Y на 0.2, 0.5 и 0.8 высоты карты
+    def set_position3(self): # центры трех фигур, Y на 0.2, 0.5 и 0.8 высоты карты
         self.figure_centreX=(int(self.cardx+self.card_widht//2), int(self.cardx+self.card_widht//2), int(self.cardx+self.card_widht//2)) 
         self.figure_centreY=(int(self.cardy+self.card_height*0.20), int(self.cardy+self.card_height*0.5), int(self.cardy+self.card_height*0.8))
         
@@ -103,7 +103,7 @@ class card: # класс карты, каждая карта будет уник
 # цвета(color), заполнения(fill), центра(figure_centreX) фигуры
     
 
-    def figure1(self): # рисование круга
+    def draw_figure1(self): # рисование круга
         for i in range(len(self.figure_centreX)): # рисовать столько раз, сколько задано координат центра
             dwg.add(dwg.circle(center=(self.figure_centreX[i],self.figure_centreY[i]),
             r=self.figure_size, 
@@ -111,9 +111,9 @@ class card: # класс карты, каждая карта будет уник
             fill=self.fill_type,
             stroke_width=3))
         
-    def figure2(self): # рисование креста, через функцию отрисовки многоугольника
+    def draw_figure2(self): # рисование креста, через функцию отрисовки многоугольника
         for i in range(len(self.figure_centreX)):
-             dwg.add(dwg.polygon(points=card.quarter_figure_draw(self.figure_centreX[i], self.figure_centreY[i],  
+             dwg.add(dwg.polygon(points=Card.quarter_figure_expand(self.figure_centreX[i], self.figure_centreY[i],  
               [(self.figure_centreX[i],self.figure_centreY[i]+self.figure_size), 
                (self.figure_centreX[i]+self.figure_size//2.7,self.figure_centreY[i]+self.figure_size), 
                (self.figure_centreX[i]+self.figure_size//2.7,self.figure_centreY[i]+self.figure_size//2.7), 
@@ -123,9 +123,9 @@ class card: # класс карты, каждая карта будет уник
               fill=self.fill_type,
               stroke_width=3))    
 
-    def figure3(self): # рисование квадрата, через функцию отрисовки многоугольника
+    def draw_figure3(self): # рисование квадрата, через функцию отрисовки многоугольника
         for i in range(len(self.figure_centreX)):
-             dwg.add(dwg.polygon(points=card.quarter_figure_draw(self.figure_centreX[i], self.figure_centreY[i],  
+             dwg.add(dwg.polygon(points=Card.quarter_figure_expand(self.figure_centreX[i], self.figure_centreY[i],  
               [(self.figure_centreX[i],self.figure_centreY[i]+self.figure_size), 
                (self.figure_centreX[i]+self.figure_size,self.figure_centreY[i]+self.figure_size), 
                (self.figure_centreX[i]+self.figure_size,self.figure_centreY[i])]),    
@@ -133,9 +133,9 @@ class card: # класс карты, каждая карта будет уник
               fill=self.fill_type,
               stroke_width=3))
             
-    def figure4(self): # рисование восьмиконечной звезды, через функцию отрисовки многоугольника
+    def draw_figure4(self): # рисование восьмиконечной звезды, через функцию отрисовки многоугольника
          for i in range(len(self.figure_centreX)):
-              dwg.add(dwg.polygon(points=card.quarter_figure_draw(self.figure_centreX[i], self.figure_centreY[i],  
+              dwg.add(dwg.polygon(points=Card.quarter_figure_expand(self.figure_centreX[i], self.figure_centreY[i],  
                [(self.figure_centreX[i],self.figure_centreY[i]+self.figure_size), 
                 (self.figure_centreX[i]+self.figure_size//4.3,self.figure_centreY[i]+self.figure_size//2), 
                 (self.figure_centreX[i]+self.figure_size//1.4,self.figure_centreY[i]+self.figure_size//1.4), 
@@ -147,7 +147,7 @@ class card: # класс карты, каждая карта будет уник
     
  
     
-    def quarter_figure_draw(centerX, centerY, quart): # функция дорисовки четверти в полную фигуру
+    def quarter_figure_expand(centerX, centerY, quart): # функция дорисовки четверти в полную фигуру
 # centerX, centerY центр фигуры, quart нижняя правая четверть отрисованной фигуры в виде массива точек
         dots=len(quart) # число точек четверти
         sx,sy=0, -2 # множители для отрисовки
@@ -168,7 +168,7 @@ class card: # класс карты, каждая карта будет уник
         return quart
     
   
-    def card_borders_draw(self): # метод создания границ карты 
+    def draw_card_borders(self): # метод создания границ карты 
         dwg.add(dwg.rect((self.cardx, self.cardy), (self.card_widht, self.card_height),  
         stroke=svgwrite.rgb(10, 10, 16, '%'),
         fill='none'))
@@ -176,13 +176,13 @@ class card: # класс карты, каждая карта будет уник
         
 init_cardX=20 # значение самой левой карты
 gap=3 # промежуток между картами
-cardX=init_cardX+card.card_widht*2+gap*2 # значение для текущей карты !!!
+cardX=init_cardX+Card.card_widht*2+gap*2 # значение для текущей карты !!!
 cardY=30 #
 card_object=[] # массив хранящий экземпляры карт
 code_list=generate_set()
 for i in range(len(code_list)):
     
-    card_object.append(card())
+    card_object.append(Card())
 # определение расположения карты на листе формата A4
 # определение X исходя из горионтальной позиции    
     if cardX==init_cardX+card_object[i].card_widht*2+gap*2:  
@@ -193,7 +193,7 @@ for i in range(len(code_list)):
         cardX+=card_object[i].card_widht+gap
 # определение Y исходя из вертикальной позиции         
     if i%3==0 and i!=0:
-        cardY+=card.card_widht//0.7+gap
+        cardY+=Card.card_widht//0.7+gap
     if i%9==0 and i!=0:
         cardY+=60
 # сохранение полученных координат 
@@ -205,34 +205,34 @@ for i in range(len(code_list)):
 # четвертый с права регистр (если есть) - цвет
     if len(code)==4:
         if code[-4]=='1':
-            card_object[i].color1()
+            card_object[i].set_color1()
         if code[-4]=='2':
-            card_object[i].color2()
+            card_object[i].set_color2()
         if code[-4]=='3':
-            card_object[i].color3()
+            card_object[i].set_color3()
 # третий с права регистр - заполнение       
     if code[-3]=='1':
-        card_object[i].fill1()
+        card_object[i].set_fill1()
     if code[-3]=='2':
-        card_object[i].fill2()
+        card_object[i].set_fill2()
     if code[-3]=='3':
-        card_object[i].fill3()
+        card_object[i].set_fill3()
 # второй с права регистр - число фигур         
     if code[-2]=='1':
-        card_object[i].position1()
+        card_object[i].set_position1()
     if code[-2]=='2':
-        card_object[i].position2()
+        card_object[i].set_position2()
     if code[-2]=='3':
-        card_object[i].position3()
+        card_object[i].set_position3()
 # самый правый регистр - определение формы и отрисовка содержимого карты     
     if code[-1]=='1':
-        card_object[i].figure1()
+        card_object[i].draw_figure1()
     if code[-1]=='2':
-        card_object[i].figure2()
+        card_object[i].draw_figure2()
     if code[-1]=='3':
-        card_object[i].figure3()
+        card_object[i].draw_figure3()
 # отрисовка границ карты        
-    card_object[i].card_borders_draw()
+    card_object[i].draw_card_borders()
   
     
 dwg.save()    
