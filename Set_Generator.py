@@ -1,6 +1,6 @@
 import svgwrite
 
-def generate_set(feature_number=4,feature_variety=3):
+def generate_set(feature_number=4,feature_variety=4):
 #    функция генерирует массив кодов, определяющих изображение на картах, т.к. для целей игры
 #    вариативность каждого признака должна быть одинаковой - процесс похож на перечисление всех чисел
 #    системы счисления с основанием feature_variety (по умолчанию - троичная система счисления)
@@ -24,29 +24,54 @@ def generate_set(feature_number=4,feature_variety=3):
                 append_list[feature_number-2-j]+=(int(round(0.1**(-j-1), 1)))
     return code_of_set_list
 
+# папка и название первого файла, обязательно с нулем в конце
+file_path='C:\\test0.svg'
+dwg = svgwrite.Drawing(file_path, size=(u'100%', u'100%'))
 
-
-
-
-
-dwg = svgwrite.Drawing('C:\\test.svg', profile='tiny', size=(u'100%', u'100%'))
-
-# градиенты вынесены отдельно так как непонятно как создать отдельный объект градиента в каждом объекте карты
-# кроме того экономичнее иметь три градиента вместо 81
-rad_grad1=svgwrite.gradients.RadialGradient(id="grad1")
-rad_grad1.add_stop_color(offset='0%', color='rgb(230, 25, 25)', opacity=None)
-rad_grad1.add_stop_color(offset='100%', color='white', opacity=None)
-dwg.defs.add(rad_grad1)
-
-rad_grad2=svgwrite.gradients.RadialGradient(id="grad2")
-rad_grad2.add_stop_color(offset='0%', color='rgb(50, 165, 80)', opacity=None)
-rad_grad2.add_stop_color(offset='100%', color='white', opacity=None)
-dwg.defs.add(rad_grad2)
-
-rad_grad3=svgwrite.gradients.RadialGradient(id="grad3")
-rad_grad3.add_stop_color(offset='0%', color='rgb(20, 50, 250)', opacity=None)
-rad_grad3.add_stop_color(offset='100%', color='white', opacity=None)
-dwg.defs.add(rad_grad3)
+# градиенты вынесены отдельно так как непонятно как создать 
+# отдельный объект градиента в каждом объекте карты
+# сейчас они пересоздаются при каждом открытии файла
+def set_gradients():
+    rad_grad1=svgwrite.gradients.RadialGradient(id="grad1")
+    rad_grad1.add_stop_color(offset='0%', color='rgb(230, 25, 25)', opacity=None)
+    rad_grad1.add_stop_color(offset='100%', color='white', opacity=None)
+    dwg.defs.add(rad_grad1)
+    
+    rad_grad2=svgwrite.gradients.RadialGradient(id="grad2")
+    rad_grad2.add_stop_color(offset='0%', color='rgb(50, 165, 80)', opacity=None)
+    rad_grad2.add_stop_color(offset='100%', color='white', opacity=None)
+    dwg.defs.add(rad_grad2)
+    
+    rad_grad3=svgwrite.gradients.RadialGradient(id="grad3")
+    rad_grad3.add_stop_color(offset='0%', color='rgb(20, 50, 250)', opacity=None)
+    rad_grad3.add_stop_color(offset='100%', color='white', opacity=None)
+    dwg.defs.add(rad_grad3)
+    
+    rad_grad4=svgwrite.gradients.RadialGradient(id="grad4")
+    rad_grad4.add_stop_color(offset='0%', color='rgb(0, 0, 0)', opacity=None)
+    rad_grad4.add_stop_color(offset='100%', color='white', opacity=None)
+    dwg.defs.add(rad_grad4)
+# установка узоров, пока заменены обратными градиентами    
+def set_patterns():
+    rad_grad1=svgwrite.gradients.RadialGradient(id="pat1")
+    rad_grad1.add_stop_color(offset='100%', color='rgb(230, 25, 25)', opacity=None)
+    rad_grad1.add_stop_color(offset='0%', color='white', opacity=None)
+    dwg.defs.add(rad_grad1)
+    
+    rad_grad2=svgwrite.gradients.RadialGradient(id="pat2")
+    rad_grad2.add_stop_color(offset='100%', color='rgb(50, 165, 80)', opacity=None)
+    rad_grad2.add_stop_color(offset='0%', color='white', opacity=None)
+    dwg.defs.add(rad_grad2)
+    
+    rad_grad3=svgwrite.gradients.RadialGradient(id="pat3")
+    rad_grad3.add_stop_color(offset='100%', color='rgb(20, 50, 250)', opacity=None)
+    rad_grad3.add_stop_color(offset='0%', color='white', opacity=None)
+    dwg.defs.add(rad_grad3)
+    
+    rad_grad4=svgwrite.gradients.RadialGradient(id="pat4")
+    rad_grad4.add_stop_color(offset='100%', color='rgb(0, 0, 0)', opacity=None)
+    rad_grad4.add_stop_color(offset='0%', color='white', opacity=None)
+    dwg.defs.add(rad_grad4)
 
 class Card: # класс карты, каждая карта будет уникальным объектом этого класса
     card_widht=183 #  ширина карты, из неё высчитывается высота карты и центры фигур
@@ -54,55 +79,77 @@ class Card: # класс карты, каждая карта будет уник
     def __init__(self):
         self.fill_color='rgb(00, 250, 00)' # цвет заливки фигуры по умолчанию - зеленый
         self.border_color='rgb(0, 200, 0)' # цвет контура фигуры по умолчанию - темно зеленый
-        self.fill_type='url(#grad2)'  # цвет заливки по умолчанию - зеленый
+        self.gradient_color='url(#grad2)'  # цвет заливки по умолчанию - зеленый
+        self.pattern_color='url(#pat2)'
         self.figure_size=30 # размер фигуры -половина её длинны или радиус круга
  #       self.cardx, self.cardy=20, 30 # верхний левый угол карты
         self.card_height= self.card_widht//0.7 #  высота карты
 
-# методы смены цвета фигуры        
+# методы смены цвета фигуры
+# сразу определяются цвета для контура фигуры, и если они будут, для заливки, градиента, узора        
     def set_color1(self): # смена цвета на красный
-        self.fill_color='rgb(250, 0, 0)'
         self.border_color='rgb(200, 0, 0)'
-        self.fill_type='url(#grad1)'  # при инициализации цвета определяется какой градиент использовать, если надо
+        self.fill_color='rgb(250, 0, 0)'
+        self.gradient_color='url(#grad1)'  
+        self.pattern_color='url(#pat1)'
     def set_color2(self): # смена цвета на зеленый
-        self.fill_color='rgb(00, 250, 00)'
         self.border_color='rgb(0, 200, 0)'
-        self.fill_type='url(#grad2)'
+        self.fill_color='rgb(00, 250, 00)'
+        self.gradient_color='url(#grad2)'
+        self.pattern_color='url(#pat2)'
     def set_color3(self): # смена цвета на синий
-        self.fill_color='rgb(0, 0, 250)'
         self.border_color='rgb(0, 0, 200)'
-        self.fill_type='url(#grad3)'
-
-# методы смена типа заполнения - полной, градиентом, ничем, штриховкой(?)
-# этот метод нужно запускать обязательно
-    
+        self.fill_color='rgb(0, 0, 250)'
+        self.gradient_color='url(#grad3)'
+        self.pattern_color='url(#pat3)'
+    def set_color4(self): # смена цвета на черный
+        self.border_color='rgb(0, 0, 0)'
+        self.fill_color='rgb(50, 50, 50)'
+        self.gradient_color='url(#grad4)'
+        self.pattern_color='url(#pat4)'
+        
+# методы смена типа заполнения - полной, градиентом, ничем, обратным градиентом
     def set_fill1(self): # смена типа заполнения на пустой
         self.fill_type='none'
-        
-    def set_fill2(self): # по умолчанию заполнение уже стоит на градиенте правильного цвета
-        pass 
-        
+    def set_fill2(self): # смена типа заполнения на градиент
+        self.fill_type=self.gradient_color
     def set_fill3(self): # смена типа заполнения на заливку
         self.fill_type=self.fill_color
+    def set_fill4(self): # смена типа заполнения на обратный градиент(заменить на узор)
+        self.fill_type=self.pattern_color
 
 # методы задания колличества фигур, создает координаты для расположения центров этих фигур   
 # figure_centreX/Y массив из координат центров, цикл отрисовки фигур отрабатывает по числу координат в массиве X
-# координаты относительно края карты, Х всегда по середине карты, Y зависит от числа фигур
+# координаты относительно края карты, Х по середине карты, Y зависит от числа фигур
     def set_position1(self): # центра единственной фигуры, Y по середины карты
         # кортеж из одного элемента нужно завершать запятой
-        self.figure_centreX, self.figure_centreY=(int(self.cardx+self.card_widht//2),), (int(self.cardy+self.card_height*0.5),)
+        self.figure_centreX=(int(self.cardx+self.card_widht*0.5),)
+        self.figure_centreY=(int(self.cardy+self.card_height*0.5),)
     def set_position2(self): # центры двух фигур, Y на 1/3 и 2/3 высоты карты
-        self.figure_centreX=(int(self.cardx+self.card_widht//2), int(self.cardx+self.card_widht//2)) 
-        self.figure_centreY=(int(self.cardy+self.card_height*0.333), int(self.cardy+self.card_height*0.666))
+        self.figure_centreX=(int(self.cardx+self.card_widht*0.5), 
+                             int(self.cardx+self.card_widht*0.5)) 
+        self.figure_centreY=(int(self.cardy+self.card_height*0.333), 
+                             int(self.cardy+self.card_height*0.666))
     def set_position3(self): # центры трех фигур, Y на 0.2, 0.5 и 0.8 высоты карты
-        self.figure_centreX=(int(self.cardx+self.card_widht//2), int(self.cardx+self.card_widht//2), int(self.cardx+self.card_widht//2)) 
-        self.figure_centreY=(int(self.cardy+self.card_height*0.20), int(self.cardy+self.card_height*0.5), int(self.cardy+self.card_height*0.8))
+        self.figure_centreX=(int(self.cardx+self.card_widht*0.5), 
+                             int(self.cardx+self.card_widht*0.5), 
+                             int(self.cardx+self.card_widht*0.5)) 
+        self.figure_centreY=(int(self.cardy+self.card_height*0.2), 
+                             int(self.cardy+self.card_height*0.5), 
+                             int(self.cardy+self.card_height*0.8))
+    def set_position4(self): # центры четырех фигур, Y на 0.35 и 0.65 высоты карты
+        self.figure_centreX=(int(self.cardx+self.card_widht*0.28), 
+                             int(self.cardx+self.card_widht*0.28), 
+                             int(self.cardx+self.card_widht*0.72),
+                             int(self.cardx+self.card_widht*0.72))
+        self.figure_centreY=(int(self.cardy+self.card_height*0.35), 
+                             int(self.cardy+self.card_height*0.65), 
+                             int(self.cardy+self.card_height*0.35),
+                             int(self.cardy+self.card_height*0.65))
         
         
 # методы форм, собственно рисуют заданные фигуры, использует определенные выше переменные объекта для 
 # цвета(color), заполнения(fill), центра(figure_centreX) фигуры
-    
-
     def draw_figure1(self): # рисование круга
         for i in range(len(self.figure_centreX)): # рисовать столько раз, сколько задано координат центра
             dwg.add(dwg.circle(center=(self.figure_centreX[i],self.figure_centreY[i]),
@@ -195,7 +242,16 @@ for i in range(len(code_list)):
     if i%3==0 and i!=0:
         cardY+=Card.card_widht//0.7+gap
     if i%9==0 and i!=0:
-        cardY+=60
+        cardY=30
+# после девятой карты сбрасываем Y, сохраняем старый файл и создаем новый        
+        dwg.save()
+        file_path=file_path.replace( str(i//9-1)+'.svg', str(i//9)+'.svg')
+        dwg = svgwrite.Drawing(file_path, size=(u'100%', u'100%'))
+        set_gradients()
+        set_patterns()
+        
+        
+        
 # сохранение полученных координат 
     card_object[i].cardx= cardX 
     card_object[i].cardy= cardY 
@@ -203,6 +259,7 @@ for i in range(len(code_list)):
 # расшифровка полученного кода
     code=str(code_list[i]) 
 # четвертый с права регистр (если есть) - цвет
+# если признаков только три - цвет меняться не будет, вариант для дальтоников
     if len(code)==4:
         if code[-4]=='1':
             card_object[i].set_color1()
@@ -210,6 +267,8 @@ for i in range(len(code_list)):
             card_object[i].set_color2()
         if code[-4]=='3':
             card_object[i].set_color3()
+        if code[-4]=='4':
+            card_object[i].set_color4()
 # третий с права регистр - заполнение       
     if code[-3]=='1':
         card_object[i].set_fill1()
@@ -217,6 +276,9 @@ for i in range(len(code_list)):
         card_object[i].set_fill2()
     if code[-3]=='3':
         card_object[i].set_fill3()
+    if code[-3]=='4':
+        card_object[i].set_fill4()
+        
 # второй с права регистр - число фигур         
     if code[-2]=='1':
         card_object[i].set_position1()
@@ -224,6 +286,8 @@ for i in range(len(code_list)):
         card_object[i].set_position2()
     if code[-2]=='3':
         card_object[i].set_position3()
+    if code[-2]=='4':
+        card_object[i].set_position4()
 # самый правый регистр - определение формы и отрисовка содержимого карты     
     if code[-1]=='1':
         card_object[i].draw_figure1()
@@ -231,8 +295,10 @@ for i in range(len(code_list)):
         card_object[i].draw_figure2()
     if code[-1]=='3':
         card_object[i].draw_figure3()
+    if code[-1]=='4':
+        card_object[i].draw_figure4()
 # отрисовка границ карты        
     card_object[i].draw_card_borders()
   
     
-dwg.save()    
+dwg.save()   
