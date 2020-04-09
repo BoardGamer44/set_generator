@@ -14,6 +14,9 @@ from card_class import Card
 folder_path = 'C:\\'
 file_path = folder_path+'print0.svg'
 dwg = svgwrite.Drawing(file_path, size=(u'100%', u'100%'))
+# создание градиентов и паттернов
+set_gradients(dwg)
+set_patterns(dwg)
 
 card_object = [] # массив хранящий экземпляры карт
 # функция генерирует массив кодов, определяющих изображение на картах
